@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  test-ldap-integration:
+    runs-on: ubuntu-latest
+    services:
+      ldap-accounts:
+        image: openidentityplatform/opendj:4.9.3
+        credentials:
+          username: ${{ secrets.DOCKER_PULL_USERNAME }}
+          password: ${{ secrets.DOCKER_PULL_PAT }}
+        env:
+          PORT: 389
+          BASE_DN: ou=people,ou=opendjup,o=pzrep,dc=github,dc=com
+        ports:
+          - 389
+      ldap-destinations:
+        image: openidentityplatform/opendj:4.9.3
+        credentials:
+          username: ${{ secrets.DOCKER_PULL_USERNAME }}
+          password: ${{ secrets.DOCKER_PULL_PAT }}
+        env:
+          PORT: 389
+          BASE_DN: ou=destinations,ou=opendjup,o=pzrep,dc=github,dc=com
+        ports:
+          - 389
+
+    steps:
+      - run: true
